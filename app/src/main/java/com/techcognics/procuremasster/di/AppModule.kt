@@ -61,9 +61,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRfqRepository(api: ApiService):
-            RfqRepository = RfqRepositoryImpl(api)
-
+    fun provideRfqRepository(api: ApiService): RfqRepository {
+      return  RfqRepositoryImpl(api)
+    }
 //    @Provides
 //    @Singleton
 //    fun provideRfqApi(retrofit: Retrofit):

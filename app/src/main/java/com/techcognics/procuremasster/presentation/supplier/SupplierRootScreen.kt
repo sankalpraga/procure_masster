@@ -16,12 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.techcognics.procuremasster.presentation.supplierProfileScreen.SupplierProfileScreen
+import androidx.navigation.navArgument
 import com.techcognics.procuremasster.presentation.designsystem.SupplierDrawer
 import com.techcognics.procuremasster.presentation.rfqdetails.RFQScreen
+import com.techcognics.procuremasster.presentation.rfqdetails.RfqViewScreenTabbed
+import com.techcognics.procuremasster.presentation.rfqdetails.SupplierRfqStepperScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,10 +62,35 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
             ) {
                 composable("supplier_home") { SupplierHome(parentNavController) }
                 composable("supplier_profile") { SupplierProfileScreen(parentNavController) }
-                composable("supplier_rfq") { RFQScreen(parentNavController) }
+                composable("supplier_rfq") { RFQScreen(supplierNavController) }
                 composable("supplier_negotiable") { SupplierNegotiableScreen(parentNavController) }
                 composable("supplier_auction") { SupplierAuctionScreen(parentNavController) }
+
+//                composable(
+//                    route = "rfq_view/{id}",
+//                    arguments = listOf(navArgument("id") { type = NavType.IntType })
+//                ) { backStackEntry ->
+//                    val id = backStackEntry.arguments?.getInt("id") ?: 0
+//                    RfqViewScreen(navController = supplierNavController, rfqId = id)
+//                }
+
+
+                composable(
+                    route = "rfq_view/{id}",
+                    arguments = listOf(navArgument("id") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getInt("id") ?: 0
+                    RfqViewScreenTabbed(navController = supplierNavController, rfqId = id)
+                }
+                composable(
+                    route = "rfq_stepper/{rfqNumber}",
+                    arguments = listOf(navArgument("rfqNumber") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val rfqNumber = backStackEntry.arguments?.getString("rfqNumber") ?: ""
+                    SupplierRfqStepperScreen(rfqNumber = rfqNumber)
+                }
             }
+
         }
     }
 }

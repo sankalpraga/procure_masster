@@ -19,15 +19,15 @@ fun SupplierHome(navController: NavHostController) {
     }
 }
 
-//@Composable
-//fun SupplierProfileScreen(navController: NavHostController) {
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        Text("👤 Supplier Profile", style = MaterialTheme.typography.headlineSmall)
-//    }
-//}
+@Composable
+fun SupplierProfileScreen(navController: NavHostController) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("👤 Supplier Profile", style = MaterialTheme.typography.headlineSmall)
+    }
+}
 
 //@Composable
 //fun SupplierRFQScreen(navController: NavHostController) {

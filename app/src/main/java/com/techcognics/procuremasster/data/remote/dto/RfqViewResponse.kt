@@ -1,24 +1,40 @@
 package com.techcognics.procuremasster.data.remote.dto
 
-// 🔹 Root RFQ response from API
+import com.google.gson.annotations.SerializedName
+
 data class RfqViewResponse(
-    val rfqNumber: String,
-    val rfqDescription: String,
-    val nameOfBuyer: String,
-    val createdDate: String,
-    val status: String,
-    val items: List<RfqItemResponse>
+    @SerializedName("id") val id: Int,
+    @SerializedName("rfqNumber")val rfqNumber: String,
+    @SerializedName("rfqDescription")val rfqDescription: String,
+    @SerializedName("nameOfBuyer")val nameOfBuyer: String,
+    @SerializedName("offerSubmissionDate")val offerSubmissionDate: String,
+
+    @SerializedName("deliveryAddress")val deliveryAddress: String?,
+    @SerializedName("status")val status: String,
+    @SerializedName("currency")val currency: String,
+
+    @SerializedName("createdDate")val createdDate: String,
+
+    @SerializedName("items")val items: List<RfqItemResponse>,
+    val rfqsAttachments: List<RfqAttachment> = emptyList()
+
 )
 
-// 🔹 RFQ Item inside the RFQ
 data class RfqItemResponse(
-    val itemNumber: String,
-    val description: String,
-    val quantity: Int,
-    val uom: UomResponse
+    @SerializedName("itemNumber")val itemNumber: String,
+    @SerializedName("description")val description: String,
+    @SerializedName("uom")val uom: UomResponse,
+    @SerializedName("quantity")val quantity: Int,
+
 )
 
-// 🔹 UOM object inside item
 data class UomResponse(
-    val uomName: String
+    @SerializedName("id")val id: Int,
+    @SerializedName("name")val name: String
+)
+
+
+data class RfqAttachment(
+    val id: Int,
+    val fileName: String
 )

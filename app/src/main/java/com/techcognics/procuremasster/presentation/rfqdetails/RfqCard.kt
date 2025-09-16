@@ -15,7 +15,9 @@ import com.techcognics.procuremasster.data.remote.RFQ
 fun RfqCard(
     rfq: RFQ,
     modifier: Modifier = Modifier,
-    onView: (RFQ) -> Unit = {}
+    onView: (RFQ) -> Unit = {},
+    onBid: (RFQ) -> Unit = {}
+
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -35,7 +37,7 @@ fun RfqCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "RFQ #${rfq.rfqNumber}",
+                    text = "RFQ ${rfq.rfqNumber}",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(Modifier.width(1.dp))
@@ -72,6 +74,17 @@ fun RfqCard(
                                     onView(rfq)
                                 }
                             )
+
+                            if(rfq.status.equals("OPEN", true)){
+                                DropdownMenuItem(
+                                    text = {Text("Bid")},
+                                    onClick = {
+                                        showMenu = false
+                                        onBid(rfq)
+
+                                    }
+                                )
+                            }
                         }
                     }
                 }

@@ -1,131 +1,192 @@
-package com.techcognics.procuremasster.presentation.rfqdetails
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.techcognics.procuremasster.data.remote.RFQ
-import com.techcognics.procuremasster.data.remote.dto.RfqItem
-import com.techcognics.procuremasster.data.remote.dto.Uom
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RfqViewScreen(
-    navController: NavHostController, // 🔹 Used for navigation back
-    rfq: RFQ                          // 🔹 The RFQ object including its items
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("RFQ Details") }, // 🔹 Title bar
-                navigationIcon = {
-                    // 🔹 Back button that pops navigation stack
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding) // Scaffold padding
-                .padding(16.dp)   // Screen inner padding
-        ) {
-            // 🔹 RFQ Number and description
-            Text("RFQ #${rfq.rfqNumber}", style = MaterialTheme.typography.headlineSmall)
-            Spacer(Modifier.height(8.dp))
-            Text(rfq.rfqDescription, style = MaterialTheme.typography.bodyMedium)
-
-            Spacer(Modifier.height(12.dp))
-
-            // 🔹 Buyer / Created Date / Status row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text("Buyer", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(rfq.nameOfBuyer, style = MaterialTheme.typography.bodySmall)
-                }
-                Column {
-                    Text("Created", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(rfq.createdDate, style = MaterialTheme.typography.bodySmall)
-                }
-                Column {
-                    Text("Status", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(rfq.status, style = MaterialTheme.typography.bodySmall)
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            // 🔹 Items header
-            Text("Items", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(8.dp))
-
-            // 🔹 List of RFQ items
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(rfq.items) { item ->
-                    ItemBox(item)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ItemBox(item: RfqItem) {
-    // 🔹 Each RFQ item shown as a card box
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text("Item: ${item.itemNumber}", style = MaterialTheme.typography.titleMedium)
-            Text(item.description, style = MaterialTheme.typography.bodyMedium)
-            Spacer(Modifier.height(4.dp))
-            Text("Quantity: ${item.quantity}", style = MaterialTheme.typography.bodySmall)
-//            Text("UoM: ${item.uom.uomName}", style = MaterialTheme.typography.bodySmall)
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewRfqViewScreen() {
-    val mockRfq = RFQ(
-        id = 1,
-        rfqNumber = "010920251238",
-        rfqDescription = "RFQ for Raw Materials",
-        nameOfBuyer = "Bhagesh Chincholi",
-        offerSubmissionDate = "2025-09-01",
-        deliveryAddress = "City Vista Pune",
-        status = "OPEN",
-        stageStatus = "APPROVED",
-        createdDate = "2025-09-01",
-        uniqueId = "3_121",
-        rfqRefId = "3",
-        bidStatus = "Bid Submitted",
-        currency = "INR",
-        items = listOf(
-            RfqItem("ITEM-001", "STEELS", 100, Uom(1, "BOX")),
-            RfqItem("ITEM-002", "RODS", 200, Uom(2, "PCS"))
-        )
-    )
-    RfqViewScreen(navController = rememberNavController(), rfq = mockRfq)
-}
+//package com.techcognics.procuremasster.presentation.rfqdetails
+//
+//import androidx.compose.foundation.layout.*
+//import androidx.compose.foundation.lazy.LazyColumn
+//import androidx.compose.foundation.lazy.items
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.ArrowBack
+//import androidx.compose.material3.*
+//import androidx.compose.runtime.*
+//import androidx.compose.ui.Alignment
+//import androidx.compose.ui.Modifier
+//import androidx.compose.ui.tooling.preview.Preview
+//import androidx.compose.ui.unit.dp
+//import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.navigation.NavHostController
+//import androidx.navigation.compose.rememberNavController
+//import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
+//import com.techcognics.procuremasster.presentation.base.UiState
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun RfqViewScreen(
+//    navController: NavHostController,
+//    rfqId: Int,
+//    viewModel: RFQViewModel = hiltViewModel()
+//) {
+//    val state by viewModel.detailState.collectAsState(initial = UiState.Idle)
+//
+//    LaunchedEffect(rfqId) {
+//        println("➡️ LaunchedEffect: Loading RFQ with id=$rfqId")
+//        if (rfqId > 0) {
+//            viewModel.loadRfqById(rfqId)
+//        } else {
+//          println("Invalid rfqId = $rfqId (navigation issue)")
+//        }
+//    }
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = { Text("RFQ Details") },
+//                navigationIcon = {
+//                    IconButton(onClick = { navController.popBackStack() }) {
+//                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+//                    }
+//                }
+//            )
+//        }
+//    ) { padding ->
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(padding),
+//            contentAlignment = Alignment.TopCenter
+//        ) {
+//            when (val uiState = state) {
+//                is UiState.Idle -> {
+//                    Text("⚪ Idle: Waiting to load RFQ")
+//                }
+//                is UiState.Loading -> {
+//                    Column(
+//                        modifier = Modifier.fillMaxSize(),
+//                        verticalArrangement = Arrangement.Center,
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        CircularProgressIndicator()
+//                        Spacer(Modifier.height(8.dp))
+//                        Text("⏳ Loading RFQ...")
+//                    }
+//                }
+//                is UiState.Error -> {
+//                    Column(
+//                        modifier = Modifier.fillMaxSize(),
+//                        verticalArrangement = Arrangement.Center,
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//                        Text("❌ Error: ${uiState.message}", color = MaterialTheme.colorScheme.error)
+//                    }
+//                }
+//                is UiState.Success -> {
+//                    val rfq = uiState.data
+//
+//                    LazyColumn(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(16.dp),
+//                        verticalArrangement = Arrangement.spacedBy(12.dp)
+//                    ) {
+//                        item {
+//                            Text("RFQ Number: ${rfq.rfqNumber}")
+//                            Text("Description: ${rfq.rfqDescription}")
+//                            Text("Buyer: ${rfq.nameOfBuyer}")
+//                            Text("Created: ${rfq.createdDate}")
+//                            Text("Status: ${rfq.status}")
+//                            Spacer(Modifier.height(16.dp))
+//                            Text("Items", style = MaterialTheme.typography.titleMedium)
+//                        }
+//
+//                        items(rfq.items) { item ->
+//                            Card(
+//                                modifier = Modifier.fillMaxWidth(),
+//                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+//                            ) {
+//                                Column(Modifier.padding(12.dp)) {
+//                                    Text("Item Number: ${item.itemNumber}", style = MaterialTheme.typography.titleSmall)
+//                                    Text("Description: ${item.description}", style = MaterialTheme.typography.bodyMedium)
+//                                    Text("Qty: ${item.quantity}", style = MaterialTheme.typography.bodySmall)
+//                                    Text("Unit: ${item.uom}", style = MaterialTheme.typography.bodySmall)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+////
+////@OptIn(ExperimentalMaterial3Api::class)
+////@Preview(showBackground = true, showSystemUi = true)
+////@Composable
+////fun PreviewRfqViewScreen() {
+////    val navController = rememberNavController()
+////
+////    val mockData = RfqViewResponse(
+////        id = 1,
+////        rfqNumber = "010920251238",
+////        rfqDescription = "RFQ for Raw Materials",
+////        nameOfBuyer = "Bhagesh Chincholi",
+////        createdDate = "2025-09-01",
+////        status = "CLOSED",
+////        items = listOf(
+////            RfqItemView(
+////                itemNumber = "ITEM-001",
+////                description = "STEELS",
+////                quantity = 100,
+////                uomName = "BOX"
+////            ),
+////            RfqItemView(
+////                itemNumber = "ITEM-002",
+////                description = "RODS",
+////                quantity = 100,
+////                uomName = "BOX"
+////            )
+////        ),
+////        offerSubmissionDate = TODO(),
+////        deliveryAddress = TODO(),
+////        currency = TODO()
+////    )
+////
+////    // Fake Success state UI (bypassing ViewModel)
+////    Scaffold(
+////        topBar = { TopAppBar(title = { Text("RFQ Details") }) }
+////    ) { padding ->
+////        LazyColumn(
+////            modifier = Modifier
+////                .fillMaxSize()
+////                .padding(padding)
+////                .padding(16.dp),
+////            verticalArrangement = Arrangement.spacedBy(12.dp)
+////        ) {
+////            item {
+////                Text("✅ RFQ Loaded!", style = MaterialTheme.typography.titleLarge)
+////                Spacer(Modifier.height(12.dp))
+////                Text("RFQ Number: ${mockData.rfqNumber}")
+////                Text("Description: ${mockData.rfqDescription}")
+////                Text("Buyer: ${mockData.nameOfBuyer}")
+////                Text("Created: ${mockData.createdDate}")
+////                Text("Status: ${mockData.status}")
+////                Spacer(Modifier.height(16.dp))
+////                Text("Items", style = MaterialTheme.typography.titleMedium)
+////            }
+////
+////            items(mockData.items) { item ->
+////                Card(
+////                    modifier = Modifier.fillMaxWidth(),
+////                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+////                ) {
+////                    Column(Modifier.padding(12.dp)) {
+////                        Text("Item Number: ${item.itemNumber}", style = MaterialTheme.typography.titleSmall)
+////                        Text("Description: ${item.description}", style = MaterialTheme.typography.bodyMedium)
+////                        Text("Qty: ${item.quantity}", style = MaterialTheme.typography.bodySmall)
+////                        Text("Unit: ${item.uomName}", style = MaterialTheme.typography.bodySmall)
+////                    }
+////                }
+////            }
+////        }
+////    }
+////}
+////
+////
+////

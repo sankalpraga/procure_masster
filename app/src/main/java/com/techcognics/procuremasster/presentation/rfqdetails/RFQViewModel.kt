@@ -1,8 +1,13 @@
 package com.techcognics.procuremasster.presentation.rfqdetails
 
+import android.graphics.Insets.add
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techcognics.procuremasster.data.remote.RFQ
+import com.techcognics.procuremasster.data.remote.dto.RFQBidResponse
+import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
 import com.techcognics.procuremasster.domain.repository.RfqRepository
 import com.techcognics.procuremasster.presentation.base.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,61 +17,101 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Calendar
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @HiltViewModel
-class RFQViewModel @Inject constructor(private val repository: RfqRepository)
-    : ViewModel() {
+class RFQViewModel @Inject constructor(
+    private val repository: RfqRepository
+) : ViewModel() {
 
     private val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val today = sdf.format(Date())
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private val lastMonth: String = Calendar.getInstance().apply {
+        add(Calendar.MONTH, -1)
+    }.time.let { sdf.format(it) }
+
+
+    // --- Date range state for list ---
     private val _startDate = MutableStateFlow(today)
     val startDate: StateFlow<String> = _startDate
 
     private val _endDate = MutableStateFlow(today)
     val endDate: StateFlow<String> = _endDate
 
-    private val _uistate = MutableStateFlow<UiState<List<RFQ>>>(UiState.Idle)
-    val uiState: StateFlow<UiState<List<RFQ>>> = _uistate
+    // --- RFQ list state ---
+    private val _listState = MutableStateFlow<UiState<List<RFQ>>>(UiState.Idle)
+    val listState: StateFlow<UiState<List<RFQ>>> = _listState
 
-//    private val _rfqs = MutableStateFlow<List<RFQ>>(emptyList())
-//    val rfqs: StateFlow<List<RFQ>> = _rfqs
-//
-//    private val _loading = MutableStateFlow(false)
-//    val loading: StateFlow<Boolean> = _loading
-//    private val _error = MutableStateFlow<String?>(null)
-//    val error: StateFlow<String?> = _error
-//
+    // --- RFQ detail state ---
+    private val _detailState = MutableStateFlow<UiState<RfqViewResponse>>(UiState.Idle)
+    val detailState: StateFlow<UiState<RfqViewResponse>> = _detailState
+
+    private val _bidState = MutableStateFlow<UiState<RFQBidResponse>>(UiState.Idle)
+    val bidState: StateFlow<UiState<RFQBidResponse>> = _bidState
+
     init {
-        loadRfqs(today, today)
+        // Load today's RFQs by default
+        loadRfqs(lastMonth, today)
     }
 
-    fun updateDateRange(start: String, end: String){
+    // 🔹 Fetch RFQs between dates
+    private fun loadRfqs(startDate: String, endDate: String) {
+        viewModelScope.launch {
+            _listState.value = UiState.Loading
+            try {
+                val rfqs = repository.getRfqsInBetween(startDate, endDate)
+                _listState.value = UiState.Success(rfqs)
+            } catch (e: Exception) {
+                _listState.value = UiState.Error(e.message ?: "Failed to load RFQs")
+            }
+        }
+    }
+
+    fun updateDateRange(start: String, end: String) {
         _startDate.value = start
         _endDate.value = end
         loadRfqs(start, end)
     }
 
-    private fun loadRfqs(startDate: String, endDate: String)
-    {
-     viewModelScope.launch {
-         _uistate.value = UiState.Loading
-         try {
-             val rfqs = repository.getRfqsInBetween(startDate, endDate)
-             _uistate.value = UiState.Success(rfqs)
-         }
-         catch (e: Exception){
-             _uistate.value = UiState.Error(e.message ?: "Failed to load RFqs")
-         }
-     }
+    // 🔹 Fetch a single RFQ by ID
+    fun loadRfqById(id: Int) {
+        viewModelScope.launch {
+            println("➡️ ViewModel calling RFQ detail with id=$id")
+            _detailState.value = UiState.Loading
+            try {
+                val rfq = repository.getRfqById(id)
+                _detailState.value = UiState.Success(rfq)
+            } catch (e: Exception) {
+                println("❌ API Error: ${e.message}")
+                _detailState.value = UiState.Error(e.message ?: "Failed to load RFQ details")
+            }
+        }
     }
 
-    fun resetState(){
-        _uistate.value = UiState.Idle
+
+//    fun loadBidByNumber(rfqNumber: String)
+//    = viewModelScope.launch {
+//        println("ViewModel loading RFQ with id = $rfqNumber")
+//        _bidState.value = UiState.Loading
+//        try {
+//            val rfq = repository.getBidDetails(rfqNumber) // should return RfqViewData
+//            _bidState.value = UiState<RFQBidResponse>
+//        } catch (e: Exception) {
+//            println("API Error: ${e.message}")
+//            _bidState.value = UiState.Error(e.message ?: "Failed to load RFQ details")
+//        }
+//    }
+
+    // Optional resets
+    fun resetListState() {
+        _listState.value = UiState.Idle
     }
 
+    fun resetDetailState() {
+        _detailState.value = UiState.Idle
+    }
 }
-
-
-
-
