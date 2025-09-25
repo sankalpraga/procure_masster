@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.navigation.safe.args.generator)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.foundation)
+//    implementation(libs.play.services.fido)
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
@@ -97,6 +100,7 @@ dependencies {
 
     // --- Material Icons ---
     implementation("androidx.compose.material:material-icons-extended")
+
     //---Material date Picker dependency ---
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -104,10 +108,15 @@ dependencies {
     // --- DataStore ---
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    //HorizontalPager
+    implementation("androidx.compose.foundation:foundation:1.5.4")
+
     //swipe
     implementation("com.google.accompanist:accompanist-pager:0.32.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
 
+    //swipe up to refresh
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.34.0")
 
     // --- Testing ---
     testImplementation("junit:junit:4.13.2")

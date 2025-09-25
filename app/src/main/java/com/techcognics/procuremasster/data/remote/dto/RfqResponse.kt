@@ -18,7 +18,7 @@ data class RfqItem(
     val uom: Uom
 )
 
-data class Uom(
-    val id: Int,
-    val name: String
-)
+//data class Uom(
+//    val id: Int,
+//    val name: String
+//)

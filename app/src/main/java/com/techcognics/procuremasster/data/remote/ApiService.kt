@@ -1,15 +1,22 @@
 package com.techcognics.procuremasster.data.remote
 
 import com.techcognics.procuremasster.data.AccountResponse
-import com.techcognics.procuremasster.data.remote.dto.Country
+import com.techcognics.procuremasster.data.Auction.AuctionResponse
+import com.techcognics.procuremasster.data.Auction.AuctionResponseItem
+import com.techcognics.procuremasster.data.remote.dto.BidResponse
+import com.techcognics.procuremasster.data.remote.dto.BidSaveRequest
+import com.techcognics.procuremasster.data.remote.dto.BidSaveResponse
+import com.techcognics.procuremasster.data.remote.dto.FreightTerms
 import com.techcognics.procuremasster.data.remote.dto.LoginRequest
 import com.techcognics.procuremasster.data.remote.dto.LoginResponse
-import com.techcognics.procuremasster.data.remote.dto.RFQBidResponse
 import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -44,9 +51,27 @@ interface ApiService {
         @Path("attachmentId") attachmentId: Int
     ): ResponseBody
 
-    // ✅ This was outside by mistake — moved inside
+    //Bid Page
     @GET("supplierDepository/fetchItemBidsDetails/{rfqNumber}")
-    suspend fun getBidDetails(
-        @Path("rfqNumber") rfqNumber: String
-    ): RFQBidResponse
+    suspend fun getBidDetails(@Path("rfqNumber") rfqNumber: String): BidResponse
+
+    //freight
+    @GET("freightTermsResource/fetchAllFreightTermsDetails")
+    suspend fun getFreightTerms(): List<FreightTerms>
+
+    @POST("rfqSuppliersResource/save")
+    suspend fun saveBid(@Body request: BidSaveRequest): ResponseBody
+
+    // Upload attachment (correct REST endpoint for your backend)
+    @Multipart
+    @POST("rfqsAttachment/upload/{rfqId}")
+    suspend fun uploadAttachment(
+        @Path("rfqId") rfqId: Int,
+        @Part file: MultipartBody.Part
+    ): ResponseBody
+
+
+    //Auction
+    @GET("supplierDepository/fetchAuctionDetails")
+    suspend fun getAuctionDetails(): AuctionResponseItem
 }

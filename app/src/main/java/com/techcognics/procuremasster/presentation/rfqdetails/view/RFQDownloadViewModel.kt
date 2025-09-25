@@ -1,4 +1,4 @@
-package com.techcognics.procuremasster.presentation.rfqdetails
+package com.techcognics.procuremasster.presentation.rfqdetails.view
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

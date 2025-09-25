@@ -5,8 +5,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +34,7 @@ fun RFQScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
+    var showOnlyOpen by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
        val today = Calendar.getInstance()
@@ -39,51 +44,74 @@ fun RFQScreen(
 
         viewModel.updateDateRange(formattedLastMonth, formattedToday)
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
-        // 🔹 Button to open DateRangePickerModal
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { showDatePicker = true }
+        // --- Row with Date Picker and Toggle Switch ---
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Select Date Range\n$startDate → $endDate")
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = { showDatePicker = true }
+            ) {
+                Text("$startDate → $endDate")
+//                Text("Select Date Range\n$startDate → $endDate")
+            }
+            Spacer(Modifier.width(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+//                Text("Open Only", style = MaterialTheme.typography.bodySmall)
+                Spacer(Modifier.width(4.dp))
+                Switch(
+                    checked = showOnlyOpen,
+                    onCheckedChange = { showOnlyOpen = it },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
         }
 
         Spacer(Modifier.height(16.dp))
 
+        // ---- Main List ----
         UiStateHandler(
             state = uiState,
             onSuccess = { rfqs ->
-                if (rfqs.isEmpty()) {
+                // Filter list based on switch
+                val displayRfqs = if (showOnlyOpen) {
+                    rfqs.filter { it.status.equals("open", ignoreCase = true) }
+                } else {
+                    rfqs
+                }
+                if (displayRfqs.isEmpty()) {
                     Text("No RFQs available")
                 } else {
                     LazyColumn {
-                        items(rfqs.size) { index ->
-                            val rfq = rfqs[index]
+                        items(displayRfqs.size) { index ->
+                            val rfq = displayRfqs[index]
                             RfqCard(
                                 rfq = rfq,
                                 onView = { selected ->
                                     navController.navigate("rfq_view/${selected.id}")
-                                } ,
-                                        onBid = { selected ->
-                                    navController.navigate("rfq_stepper/${selected.rfqNumber}") // ✅ opens bid screen
+                                },
+                                onBid = { selected ->
+                                    navController.navigate("rfqStepper/${selected.rfqNumber}")
                                 }
-
                             )
                         }
                     }
-
                 }
             },
             onRetry = { viewModel.updateDateRange(startDate, endDate) }
         )
     }
 
-    // 🔹 Show modal only when triggered
+    // Date picker modal
     if (showDatePicker) {
         DateRangePickerModal(
             onDateRangeSelected = { range ->
@@ -98,3 +126,83 @@ fun RFQScreen(
         )
     }
 }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(16.dp)
+//    ) {
+//        // --- Row with Date Picker and Toggle Switch ---
+//        Row(
+//            Modifier.fillMaxWidth(),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Button(
+//                modifier = Modifier.weight(1f),
+//                onClick = { showDatePicker = true }
+//            ) {
+//                Text("Select Date Range\n$startDate → $endDate")
+//            }
+//            Spacer(Modifier.width(16.dp))
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//                Text("Open Only", style = MaterialTheme.typography.bodySmall)
+//                Spacer(Modifier.width(4.dp))
+//                Switch(
+//                    checked = showOnlyOpen,
+//                    onCheckedChange = { showOnlyOpen = it },
+//                    colors = SwitchDefaults.colors(
+//                        checkedThumbColor = MaterialTheme.colorScheme.primary
+//                    )
+//                )
+//            }
+//        }
+//
+//        Spacer(Modifier.height(16.dp))
+
+//        UiStateHandler(
+//            state = uiState,
+//            onSuccess = { rfqs ->
+//                if (rfqs.isEmpty()) {
+//                    Text("No RFQs available")
+//                } else {
+//                    LazyColumn {
+//                        items(rfqs.size) { index ->
+//                            val rfq = rfqs[index]
+//                            RfqCard(
+//                                rfq = rfq,
+//                                onView = { selected ->
+//                                    navController.navigate("rfq_view/${selected.id}")
+//                                } ,
+//                                onBid = { selected ->
+//                                    println("🟢 Bid clicked → rfqNumber=${selected.rfqNumber}, id=${selected.id}")
+//                                    navController.navigate("rfqStepper/${selected.rfqNumber}")
+//
+//                                }
+//
+//
+//
+//
+//                            )
+//                        }
+//                    }
+//
+//                }
+//            },
+//            onRetry = { viewModel.updateDateRange(startDate, endDate) }
+//        )
+//    }
+//
+//    // 🔹 Show modal only when triggered
+//    if (showDatePicker) {
+//        DateRangePickerModal(
+//            onDateRangeSelected = { range ->
+//                val (start, end) = range
+//                if (start != null && end != null) {
+//                    val formattedStart = sdf.format(Date(start))
+//                    val formattedEnd = sdf.format(Date(end))
+//                    viewModel.updateDateRange(formattedStart, formattedEnd)
+//                }
+//            },
+//            onDismiss = { showDatePicker = false }
+//        )
+//    }
+//}

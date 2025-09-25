@@ -1,12 +1,10 @@
 package com.techcognics.procuremasster.presentation.rfqdetails
 
-import android.graphics.Insets.add
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techcognics.procuremasster.data.remote.RFQ
-import com.techcognics.procuremasster.data.remote.dto.RFQBidResponse
 import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
 import com.techcognics.procuremasster.domain.repository.RfqRepository
 import com.techcognics.procuremasster.presentation.base.UiState
@@ -15,9 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.Calendar
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -50,8 +48,8 @@ class RFQViewModel @Inject constructor(
     private val _detailState = MutableStateFlow<UiState<RfqViewResponse>>(UiState.Idle)
     val detailState: StateFlow<UiState<RfqViewResponse>> = _detailState
 
-    private val _bidState = MutableStateFlow<UiState<RFQBidResponse>>(UiState.Idle)
-    val bidState: StateFlow<UiState<RFQBidResponse>> = _bidState
+//    private val _bidState = MutableStateFlow<UiState<RFQBidResponse>>(UiState.Idle)
+//    val bidState: StateFlow<UiState<RFQBidResponse>> = _bidState
 
     init {
         // Load today's RFQs by default

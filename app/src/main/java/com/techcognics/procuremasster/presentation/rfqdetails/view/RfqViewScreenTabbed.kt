@@ -1,5 +1,7 @@
-package com.techcognics.procuremasster.presentation.rfqdetails
+package com.techcognics.procuremasster.presentation.rfqdetails.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,9 +21,12 @@ import com.techcognics.procuremasster.data.remote.dto.RfqItemResponse
 import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
 import com.techcognics.procuremasster.presentation.base.UiState
 import com.techcognics.procuremasster.presentation.openPdf
+import com.techcognics.procuremasster.presentation.rfqdetails.RFQViewModel
+import com.techcognics.procuremasster.presentation.rfqdetails.view.RFQDownloadViewModel
 import com.techcognics.procuremasster.presentation.saveFileToDownloads
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun RfqViewScreenTabbed(

@@ -1,5 +1,7 @@
 package com.techcognics.procuremasster.presentation.supplier
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -23,10 +25,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.techcognics.procuremasster.presentation.designsystem.SupplierDrawer
 import com.techcognics.procuremasster.presentation.rfqdetails.RFQScreen
-import com.techcognics.procuremasster.presentation.rfqdetails.RfqViewScreenTabbed
-import com.techcognics.procuremasster.presentation.rfqdetails.SupplierRfqStepperScreen
+import com.techcognics.procuremasster.presentation.rfqdetails.view.RfqViewScreenTabbed
+import com.techcognics.procuremasster.presentation.rfqdetails.bid.screens.BidScreen
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplierRootScreen(parentNavController: NavHostController) {
@@ -66,13 +69,7 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
                 composable("supplier_negotiable") { SupplierNegotiableScreen(parentNavController) }
                 composable("supplier_auction") { SupplierAuctionScreen(parentNavController) }
 
-//                composable(
-//                    route = "rfq_view/{id}",
-//                    arguments = listOf(navArgument("id") { type = NavType.IntType })
-//                ) { backStackEntry ->
-//                    val id = backStackEntry.arguments?.getInt("id") ?: 0
-//                    RfqViewScreen(navController = supplierNavController, rfqId = id)
-//                }
+
 
 
                 composable(
@@ -82,58 +79,19 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
                     val id = backStackEntry.arguments?.getInt("id") ?: 0
                     RfqViewScreenTabbed(navController = supplierNavController, rfqId = id)
                 }
+
                 composable(
-                    route = "rfq_stepper/{rfqNumber}",
+                    route = "rfqStepper/{rfqNumber}",
                     arguments = listOf(navArgument("rfqNumber") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val rfqNumber = backStackEntry.arguments?.getString("rfqNumber") ?: ""
-                    SupplierRfqStepperScreen(rfqNumber = rfqNumber)
+                    BidScreen(rfqNumber = rfqNumber, navController = supplierNavController)
                 }
+
+
+
             }
 
         }
     }
 }
-//
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun SupplierRootScreen(navController: NavHostController) {
-//    val drawerState = rememberDrawerState(DrawerValue.Closed)
-//    val scope = rememberCoroutineScope()
-//
-//    ModalNavigationDrawer(
-//        drawerState = drawerState,
-//        drawerContent = {
-//            SupplierDrawer(
-//                navController = navController,
-//                closeDrawer = { scope.launch { drawerState.close() } },
-////                function = TODO()
-//            )
-//        }
-//    ) {
-//        Scaffold(
-//            topBar = {
-//                TopAppBar(
-//                    title = { Text("Supplier ERP") },
-//                    navigationIcon = {
-//                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-//                            Icon(Icons.Default.Menu, contentDescription = "Menu")
-//                        }
-//                    }
-//                )
-//            }
-//        ) { padding ->
-//            NavHost(
-//                navController = navController,
-//                startDestination = "supplier_home",
-//                modifier = Modifier.padding(padding)
-//            ) {
-//                composable("supplier_home") { SupplierHome(navController) }
-//                composable("supplier_profile") { SupplierProfileScreen(navController) }
-//                composable("supplier_rfq") { /* Your RFQ Screen */ }
-//                composable("supplier_negotiable") { SupplierNegotiableScreen(navController) }
-//                composable("supplier_auction") { SupplierAuctionScreen(navController) }
-//            }
-//        }
-//    }
-//}

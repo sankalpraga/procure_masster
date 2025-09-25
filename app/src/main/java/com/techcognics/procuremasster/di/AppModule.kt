@@ -1,9 +1,13 @@
 package com.techcognics.procuremasster.di
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.techcognics.procuremasster.data.local.SessionManager
 import com.techcognics.procuremasster.data.remote.ApiService
 import com.techcognics.procuremasster.data.remote.AuthInterceptor
+import com.techcognics.procuremasster.data.remote.SafeDoubleAdapter
+import com.techcognics.procuremasster.data.remote.SafeIntAdapter
 import com.techcognics.procuremasster.data.repository.AuthRepositoryImpl
 import com.techcognics.procuremasster.data.repository.RfqRepositoryImpl
 import com.techcognics.procuremasster.domain.repository.AuthRepository
@@ -25,6 +29,15 @@ object AppModule {
 
     private const val BASE_URL = "http://ec2-13-48-134-83.eu-north-1.compute.amazonaws.com:8080/api/"
 
+    @Provides
+    @Singleton
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            .setLenient()
+            .registerTypeAdapter(Double::class.java, SafeDoubleAdapter())
+            .registerTypeAdapter(Int::class.java, SafeIntAdapter())
+            .create()
+    }
     @Provides
     @Singleton
     fun provideSessionManager(@ApplicationContext context: Context): SessionManager =
@@ -53,6 +66,8 @@ object AppModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
+
+
 
     @Provides
     @Singleton

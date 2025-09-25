@@ -29,15 +29,7 @@ fun SupplierProfileScreen(navController: NavHostController) {
     }
 }
 
-//@Composable
-//fun SupplierRFQScreen(navController: NavHostController) {
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        Text("📋 Supplier RFQ", style = MaterialTheme.typography.headlineSmall)
-//    }
-//}
+
 
 @Composable
 fun SupplierNegotiableScreen(navController: NavHostController) {

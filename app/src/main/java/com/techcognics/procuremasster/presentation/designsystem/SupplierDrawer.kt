@@ -2,9 +2,11 @@ package com.techcognics.procuremasster.presentation.designsystem
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.CompareArrows
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -42,7 +44,7 @@ fun SupplierDrawer(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") }
         )
         NavigationDrawerItem(
-            label = { Text("Profile") },
+            label = { Text("Supplier") },
             selected = false,
             onClick = {
                 navController.navigate("supplier_profile")
@@ -60,13 +62,13 @@ fun SupplierDrawer(
             icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "RFQ") }
         )
         NavigationDrawerItem(
-            label = { Text("Negotiable") },
+            label = { Text("Negotiation") },
             selected = false,
             onClick = {
                 navController.navigate("supplier_negotiable")
                 closeDrawer()
             },
-            icon = { Icon(Icons.Default.SwapHoriz, contentDescription = "Negotiable") }
+            icon = { Icon(Icons.Default.CompareArrows, contentDescription = "Negotiable") }
         )
         NavigationDrawerItem(
             label = { Text("Auction") },
