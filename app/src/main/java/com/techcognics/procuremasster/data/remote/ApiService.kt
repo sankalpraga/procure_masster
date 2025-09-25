@@ -73,5 +73,5 @@ interface ApiService {
 
     //Auction
     @GET("supplierDepository/fetchAuctionDetails")
-    suspend fun getAuctionDetails(): AuctionResponseItem
+    suspend fun getAuctionDetails(): AuctionResponse
 }

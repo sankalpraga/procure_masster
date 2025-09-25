@@ -41,12 +41,12 @@ fun SupplierNegotiableScreen(navController: NavHostController) {
     }
 }
 
-@Composable
-fun SupplierAuctionScreen(navController: NavHostController) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("🎯 Supplier Auction", style = MaterialTheme.typography.headlineSmall)
-    }
-}
+//@Composable
+//fun SupplierAuctionScreen(navController: NavHostController) {
+//    Box(
+//        modifier = Modifier.fillMaxSize(),
+//        contentAlignment = Alignment.Center
+//    ) {
+//        Text("🎯 Supplier Auction", style = MaterialTheme.typography.headlineSmall)
+//    }
+//}

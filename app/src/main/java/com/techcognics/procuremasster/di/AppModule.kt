@@ -8,8 +8,10 @@ import com.techcognics.procuremasster.data.remote.ApiService
 import com.techcognics.procuremasster.data.remote.AuthInterceptor
 import com.techcognics.procuremasster.data.remote.SafeDoubleAdapter
 import com.techcognics.procuremasster.data.remote.SafeIntAdapter
+import com.techcognics.procuremasster.data.repository.AuctionRepositoryImpl
 import com.techcognics.procuremasster.data.repository.AuthRepositoryImpl
 import com.techcognics.procuremasster.data.repository.RfqRepositoryImpl
+import com.techcognics.procuremasster.domain.repository.AuctionRepository
 import com.techcognics.procuremasster.domain.repository.AuthRepository
 import com.techcognics.procuremasster.domain.repository.RfqRepository
 import dagger.Module
@@ -79,10 +81,12 @@ object AppModule {
     fun provideRfqRepository(api: ApiService): RfqRepository {
       return  RfqRepositoryImpl(api)
     }
-//    @Provides
-//    @Singleton
-//    fun provideRfqApi(retrofit: Retrofit):
-//            Rfq = RfqRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideAuctionRepository(api: ApiService): AuctionRepository{
+        return AuctionRepositoryImpl(api)
+    }
 
 
 }

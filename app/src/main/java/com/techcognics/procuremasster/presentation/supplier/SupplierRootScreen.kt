@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.techcognics.procuremasster.presentation.auction.auctionscreen
 import com.techcognics.procuremasster.presentation.designsystem.SupplierDrawer
 import com.techcognics.procuremasster.presentation.rfqdetails.RFQScreen
 import com.techcognics.procuremasster.presentation.rfqdetails.view.RfqViewScreenTabbed
@@ -67,7 +68,7 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
                 composable("supplier_profile") { SupplierProfileScreen(parentNavController) }
                 composable("supplier_rfq") { RFQScreen(supplierNavController) }
                 composable("supplier_negotiable") { SupplierNegotiableScreen(parentNavController) }
-                composable("supplier_auction") { SupplierAuctionScreen(parentNavController) }
+                composable("supplier_auction") { auctionscreen(parentNavController) }
 
 
 
