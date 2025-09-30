@@ -19,10 +19,10 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.pager.*
 import com.techcognics.procuremasster.data.remote.dto.RfqItemResponse
 import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
+//import com.techcognics.procuremasster.presentation.auction.view.InfoRow
 import com.techcognics.procuremasster.presentation.base.UiState
 import com.techcognics.procuremasster.presentation.openPdf
 import com.techcognics.procuremasster.presentation.rfqdetails.RFQViewModel
-import com.techcognics.procuremasster.presentation.rfqdetails.view.RFQDownloadViewModel
 import com.techcognics.procuremasster.presentation.saveFileToDownloads
 import kotlinx.coroutines.launch
 

@@ -112,4 +112,5 @@ class RFQViewModel @Inject constructor(
     fun resetDetailState() {
         _detailState.value = UiState.Idle
     }
+
 }

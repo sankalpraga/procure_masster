@@ -1,9 +1,14 @@
 package com.techcognics.procuremasster.domain.repository
 
-import com.techcognics.procuremasster.data.Auction.AuctionResponse
-import com.techcognics.procuremasster.data.Auction.AuctionResponseItem
+import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
+import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
+import okhttp3.ResponseBody
 
 interface AuctionRepository {
 
-    suspend fun getAuctionDetails(): AuctionResponse
+    suspend fun getAuctionDetails(): List<AuctionResponseItem>
+
+    suspend fun getBidHistory(rfqId: Int): ResponseBody
+
+    suspend fun getRfqByIdAuction(rfqId: Int): AuctionViewResponse
 }

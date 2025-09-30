@@ -30,4 +30,6 @@ interface RfqRepository {
     suspend fun uploadAttachment(rfqId: Int, file: MultipartBody.Part): ResponseBody
 
     suspend fun uploadAttachmentFromUri(rfqId: Int, fileUri: Uri, context: Context): ResponseBody
+
+
 }

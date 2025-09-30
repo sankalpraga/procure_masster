@@ -1,6 +1,4 @@
-package com.techcognics.procuremasster.data.Auction
-
-import com.techcognics.procuremasster.data.Auction.Item
+package com.techcognics.procuremasster.data.remote.auctionpackage
 
 data class AuctionResponseItem(
     val auctionDescription: Any,
