@@ -24,7 +24,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.techcognics.procuremasster.presentation.auction.AuctionScreen
-import com.techcognics.procuremasster.presentation.auction.view.AuctionViewScreen
+import com.techcognics.procuremasster.presentation.auction.biddetails.BiddingScreen
+import com.techcognics.procuremasster.presentation.auction.view.AuctionDetailScreen
 import com.techcognics.procuremasster.presentation.designsystem.SupplierDrawer
 import com.techcognics.procuremasster.presentation.rfqdetails.RFQScreen
 import com.techcognics.procuremasster.presentation.rfqdetails.view.RfqViewScreenTabbed
@@ -94,7 +95,13 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
                 composable("auction_view/{rfqId}") { backStackEntry ->
                     val rfqId = backStackEntry.arguments?.getString("rfqId")?.toIntOrNull()
                     requireNotNull(rfqId) { "rfqId parameter is missing" }
-                    AuctionViewScreen(rfqId = rfqId, navController = supplierNavController)
+                    AuctionDetailScreen(rfqId = rfqId, navController = supplierNavController)
+                }
+
+                composable("auction_submit/{rfqId}") { backStackEntry ->
+                    val rfqId = backStackEntry.arguments?.getString("rfqId")?.toIntOrNull()
+                    requireNotNull(rfqId) { "rfqId parameter is missing" }
+                    BiddingScreen(rfqId = rfqId, navController = supplierNavController)
                 }
 
 

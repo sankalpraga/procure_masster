@@ -3,6 +3,8 @@ package com.techcognics.procuremasster.presentation.auction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import com.techcognics.procuremasster.domain.repository.AuctionRepository
 import com.techcognics.procuremasster.presentation.base.UiState
@@ -23,8 +25,8 @@ class AuctionViewModel @Inject constructor(
     private val _auctionDetails = MutableStateFlow<AuctionViewResponse?>(null)
     val auctionDetails: StateFlow<AuctionViewResponse?> = _auctionDetails
 
-
-
+    private val _bidDetailsItem = MutableStateFlow<UiState<List<SupplierBidDetailsItem>>>(UiState.Idle)
+    val bidDetailsItem: StateFlow<UiState<List<SupplierBidDetailsItem>>> = _bidDetailsItem
 
 
     init {
@@ -69,5 +71,28 @@ class AuctionViewModel @Inject constructor(
         }
     }
 
+    fun loadBidDetails(rfqId: Int){
+        viewModelScope.launch { try {
+            val detailsItem = repository.getBidAuction(rfqId)
+            _bidDetailsItem.value = UiState.Success(detailsItem)
+        }
+        catch (e: Exception){
+            _bidDetailsItem.value = UiState.Error(e.message ?: "Failed to load Bid Auctions")
+
+        }
+        }
+    }
+
+    fun submitBidPrice(rfqId: Int, itemId: Int, bidPrice: Double, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val request = BidPriceRequest(rfqId, itemId, bidPrice)
+                repository.submitBidPrice(request) // must call suspend fun in repository
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e.message ?: "Failed to submit bid")
+            }
+        }
+    }
 
 }

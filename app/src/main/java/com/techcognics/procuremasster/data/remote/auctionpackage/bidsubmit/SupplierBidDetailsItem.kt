@@ -1,6 +1,6 @@
 package com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit
 
-data class BidSubmitItem(
+data class SupplierBidDetailsItem(
     val auctionBidStatus: Any,
     val auctionDescription: Any,
     val auctionEndDateTime: String,
@@ -16,7 +16,7 @@ data class BidSubmitItem(
     val companyName: String,
     val contactPerson: String,
     val createdDate: String,
-    val hideCurrentBidPrice: Any,
+    val hideCurrentBidPrice: Int,
     val id: Int,
     val itemDescription: String,
     val itemId: Int,

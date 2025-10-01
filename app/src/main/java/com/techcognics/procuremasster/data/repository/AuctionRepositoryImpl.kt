@@ -2,6 +2,8 @@ package com.techcognics.procuremasster.data.repository
 
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
 import com.techcognics.procuremasster.data.remote.ApiService
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import com.techcognics.procuremasster.domain.repository.AuctionRepository
 import okhttp3.ResponseBody
@@ -20,6 +22,14 @@ class AuctionRepositoryImpl @Inject constructor(
 
     override suspend fun getRfqByIdAuction(rfqId: Int): AuctionViewResponse {
         return api.getRfqByIdAuction(rfqId)
+    }
+
+    override suspend fun getBidAuction(rfqId: Int): List<SupplierBidDetailsItem> {
+        return api.getBidAuction(rfqId)
+    }
+
+    override suspend fun submitBidPrice(request: BidPriceRequest): okhttp3.ResponseBody {
+        return api.submitBidPrice(request)
     }
 
 }

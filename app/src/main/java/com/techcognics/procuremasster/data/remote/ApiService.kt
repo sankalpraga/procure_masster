@@ -2,7 +2,8 @@ package com.techcognics.procuremasster.data.remote
 
 import com.techcognics.procuremasster.data.AccountResponse
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
-import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidSubmitItem
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import com.techcognics.procuremasster.data.remote.dto.BidResponse
 import com.techcognics.procuremasster.data.remote.dto.BidSaveRequest
@@ -80,10 +81,10 @@ interface ApiService {
         @Path("rfqId") rfqId: Int
     ): AuctionViewResponse
 
-    @GET("supplierDepository/fetchSupplierBidAuction/{rfqId}")
-    suspend fun getAuctionBidSubmit(
-        @Path("rfqId") rfqId: Int
-    ): BidSubmitItem
+//    @GET("supplierDepository/fetchSupplierBidAuction/{rfqId}")
+//    suspend fun getAuctionBidSubmit(
+//        @Path("rfqId") rfqId: Int
+//    ): BidSubmitItem
 
     //download bid history
     @GET("supplierDepository/generateBidHistory/{rfqId}")
@@ -91,5 +92,13 @@ interface ApiService {
         @Path("rfqId") rfqId: Int
     ): ResponseBody
 
+    @GET("supplierDepository/fetchSupplierBidAuction/{rfqId}")
+    suspend fun getBidAuction(
+        @Path("rfqId") rfqId: Int
+    ): List<SupplierBidDetailsItem>
 
+    @POST("supplierDepository/fetchSupplierBidAuction/{rfqId}")
+    suspend fun submitBidPrice(
+        @Body bidRequest: BidPriceRequest
+    ): ResponseBody
 }
