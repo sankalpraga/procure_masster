@@ -28,8 +28,10 @@ class AuctionRepositoryImpl @Inject constructor(
         return api.getBidAuction(rfqId)
     }
 
-    override suspend fun submitBidPrice(request: BidPriceRequest): okhttp3.ResponseBody {
-        return api.submitBidPrice(request)
+    override suspend fun submitBidPrice(rfqId: Int, request: BidPriceRequest): ResponseBody {
+        return api.submitBidPrice(rfqId, request)
     }
+
+
 
 }

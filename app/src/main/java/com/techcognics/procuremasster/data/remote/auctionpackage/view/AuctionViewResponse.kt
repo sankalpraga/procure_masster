@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class AuctionViewResponse(
     val auctionDescription: Any,
     val auctionEndDateTime: String,
-    val auctionNo: Any,
+    @SerializedName("auctionNo")
+    val auctionNo: String?,
     val auctionOriginalEndDateTime: Any,
     val auctionStartDateTime: String,
     val auctionTitle: String,

@@ -97,8 +97,12 @@ interface ApiService {
         @Path("rfqId") rfqId: Int
     ): List<SupplierBidDetailsItem>
 
-    @POST("supplierDepository/fetchSupplierBidAuction/{rfqId}")
+    @POST("supplierDepository/saveBid/{rfqId}")
     suspend fun submitBidPrice(
+        @Path("rfqId") rfqId: Int,
         @Body bidRequest: BidPriceRequest
     ): ResponseBody
+// or whatever response model you want if parsing JSON
+
+
 }

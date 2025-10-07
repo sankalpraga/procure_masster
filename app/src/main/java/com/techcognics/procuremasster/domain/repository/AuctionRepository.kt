@@ -15,7 +15,8 @@ interface AuctionRepository {
     suspend fun getRfqByIdAuction(rfqId: Int): AuctionViewResponse
 
     suspend fun getBidAuction(rfqId: Int): List<SupplierBidDetailsItem>
-    suspend fun submitBidPrice(request: BidPriceRequest): okhttp3.ResponseBody
+
+    suspend fun submitBidPrice(rfqId: Int, request: BidPriceRequest): ResponseBody
 
 
 

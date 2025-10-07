@@ -72,22 +72,31 @@ class AuctionViewModel @Inject constructor(
     }
 
     fun loadBidDetails(rfqId: Int){
-        viewModelScope.launch { try {
-            val detailsItem = repository.getBidAuction(rfqId)
-            _bidDetailsItem.value = UiState.Success(detailsItem)
-        }
-        catch (e: Exception){
-            _bidDetailsItem.value = UiState.Error(e.message ?: "Failed to load Bid Auctions")
-
-        }
+        viewModelScope.launch {
+            try {
+                val detailsItem = repository.getBidAuction(rfqId)
+                println("DEBUG: Bid details API returned ${detailsItem.size} items") // << DEBUG PRINT
+                _bidDetailsItem.value = UiState.Success(detailsItem)
+            }
+            catch (e: Exception){
+                println("DEBUG: Bid details error: ${e.message}") // << DEBUG PRINT
+                _bidDetailsItem.value = UiState.Error(e.message ?: "Failed to load Bid Auctions")
+            }
         }
     }
 
-    fun submitBidPrice(rfqId: Int, itemId: Int, bidPrice: Double, onSuccess: () -> Unit, onError: (String) -> Unit) {
+
+    fun submitBidPrice(
+        rfqId: Int,
+        itemId: Int,
+        bidPrice: Double,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
         viewModelScope.launch {
             try {
-                val request = BidPriceRequest(rfqId, itemId, bidPrice)
-                repository.submitBidPrice(request) // must call suspend fun in repository
+                val request = BidPriceRequest(itemId = itemId, price = bidPrice) // fixed line
+                repository.submitBidPrice(rfqId, request)
                 onSuccess()
             } catch (e: Exception) {
                 onError(e.message ?: "Failed to submit bid")
@@ -95,4 +104,8 @@ class AuctionViewModel @Inject constructor(
         }
     }
 
+
+
+
 }
+
