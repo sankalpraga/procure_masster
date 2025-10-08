@@ -2,11 +2,15 @@ package com.techcognics.procuremasster.presentation.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.techcognics.procuremasster.presentation.auction.AuctionScreen
+import com.techcognics.procuremasster.presentation.auction.biddetails.BiddingScreen
 import com.techcognics.procuremasster.presentation.login.LoginScreen
 import com.techcognics.procuremasster.presentation.splash.SplashScreen
 import com.techcognics.procuremasster.presentation.splash.SplashViewModel
@@ -16,7 +20,8 @@ import com.techcognics.procuremasster.presentation.supplier.SupplierRootScreen
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    splashViewModel: SplashViewModel
+    splashViewModel: SplashViewModel,
+    snackbarHostState: SnackbarHostState
 ) {
 
     val startDestination = splashViewModel.startDestination.collectAsState().value
@@ -31,21 +36,25 @@ fun AppNavGraph(
         composable("login") { LoginScreen(navController) }
         composable("supplier_root") { SupplierRootScreen(navController) }
 
-//        // ✅ NEW: RFQ Details Screen
-//        composable(
-//            route = "rfq_view/{rfqId}",
-//            arguments = listOf(navArgument("rfqId") { type = NavType.IntType })
-//        ) { backStackEntry ->
-//            val rfqId = backStackEntry.arguments?.getInt("rfqId") ?: 0
-//            val parentNavController = null
-//            RfqViewScreen(navController = parentNavController, rfqId = rfqId)
-//        }
-//        composable("supplier_home") { SupplierHome(navController) }
-//        composable("supplier_profile"){ SupplierProfileScreen(navController) }
-//        composable("supplier_rfq"){RFQScreen(navController)}
-//        composable("supplier_negotiable"){SupplierNegotiableScreen(navController)}
-//        composable("supplier_auction"){SupplierAuctionScreen(navController)}
-//
+
+        composable("auction_submit/{rfqId}") { backStackEntry ->
+            val rfqId = backStackEntry.arguments?.getString("rfqId")?.toIntOrNull()
+            if (rfqId != null) {
+                BiddingScreen(
+                    rfqId = rfqId,
+                    navController = navController,
+//                    snackbarHostState = snackbarHostState
+                )
+            } else {
+                // If rfqId is missing, navigate away
+                LaunchedEffect(Unit) { navController.navigate("supplier_auction") }
+            }
+        }
+//        composable("supplier_auction") { AuctionScreen(
+//            navController,
+//            auctionNumber = TODO(),
+//            snackbarHostState = TODO()
+//        ) }
 
     }
 

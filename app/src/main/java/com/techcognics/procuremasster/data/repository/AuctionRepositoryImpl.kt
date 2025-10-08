@@ -3,6 +3,7 @@ package com.techcognics.procuremasster.data.repository
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
 import com.techcognics.procuremasster.data.remote.ApiService
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SaveBidRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import com.techcognics.procuremasster.domain.repository.AuctionRepository
@@ -28,8 +29,14 @@ class AuctionRepositoryImpl @Inject constructor(
         return api.getBidAuction(rfqId)
     }
 
-    override suspend fun submitBidPrice(rfqId: Int, request: BidPriceRequest): ResponseBody {
-        return api.submitBidPrice(rfqId, request)
+    override suspend fun saveBid(rfqId: Int, bids: List<SaveBidRequest>): Result<Unit> {
+        return try {
+            val response = api.saveBid(rfqId, bids)
+            if (response.isSuccessful) Result.success(Unit)
+            else Result.failure(Exception("Bid submit failed: ${response.errorBody()?.string()}"))
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
     }
 
 

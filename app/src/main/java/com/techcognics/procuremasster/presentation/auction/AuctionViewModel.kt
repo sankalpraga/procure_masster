@@ -3,7 +3,7 @@ package com.techcognics.procuremasster.presentation.auction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
-import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SaveBidRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import com.techcognics.procuremasster.domain.repository.AuctionRepository
@@ -86,23 +86,32 @@ class AuctionViewModel @Inject constructor(
     }
 
 
-    fun submitBidPrice(
+    fun submitBid(
         rfqId: Int,
-        itemId: Int,
-        bidPrice: Double,
+        item: SupplierBidDetailsItem,
+        userBidPrice: Double,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
         viewModelScope.launch {
-            try {
-                val request = BidPriceRequest(itemId = itemId, price = bidPrice) // fixed line
-                repository.submitBidPrice(rfqId, request)
-                onSuccess()
-            } catch (e: Exception) {
-                onError(e.message ?: "Failed to submit bid")
-            }
+            val bid = SaveBidRequest(
+                id = item.itemId,
+                quantity = item.quantity,
+                uom = emptyMap(),  // ✅ Use this if unsure
+                auctionStartPrice = item.auctionStartPrice,
+                lastPurchasePrice = item.lastPurchasePrice,
+                bidDecrementalValue = item.bidDecrementalValue,
+                price = userBidPrice
+            )
+            val result = repository.saveBid(rfqId, listOf(bid))
+            result.fold(
+                onSuccess = { onSuccess() },
+                onFailure = { onError(it.localizedMessage ?: "Unknown error") }
+            )
         }
     }
+
+
 
 
 

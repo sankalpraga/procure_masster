@@ -2,7 +2,9 @@ package com.techcognics.procuremasster.data.remote
 
 import com.techcognics.procuremasster.data.AccountResponse
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.AuctionBidRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SaveBidRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import com.techcognics.procuremasster.data.remote.dto.BidResponse
@@ -13,6 +15,7 @@ import com.techcognics.procuremasster.data.remote.dto.LoginResponse
 import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -97,11 +100,12 @@ interface ApiService {
         @Path("rfqId") rfqId: Int
     ): List<SupplierBidDetailsItem>
 
-    @POST("supplierDepository/saveBid/{rfqId}")
-    suspend fun submitBidPrice(
-        @Path("rfqId") rfqId: Int,
-        @Body bidRequest: BidPriceRequest
-    ): ResponseBody
+    @POST("supplierDepository/saveBid/{rfqSupplierRfqId}")
+    suspend fun saveBid(
+        @Path("rfqSupplierRfqId") rfqId: Int,
+        @Body bidList: List<SaveBidRequest>
+    ): Response<Unit> // <--- Must return `Response<>`
+
 // or whatever response model you want if parsing JSON
 
 

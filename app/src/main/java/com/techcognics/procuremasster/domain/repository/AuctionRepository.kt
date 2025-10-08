@@ -2,6 +2,7 @@ package com.techcognics.procuremasster.domain.repository
 
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
+import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SaveBidRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
 import okhttp3.ResponseBody
@@ -16,7 +17,7 @@ interface AuctionRepository {
 
     suspend fun getBidAuction(rfqId: Int): List<SupplierBidDetailsItem>
 
-    suspend fun submitBidPrice(rfqId: Int, request: BidPriceRequest): ResponseBody
+    suspend fun saveBid(rfqId: Int, bids: List<SaveBidRequest>): Result<Unit>
 
 
 

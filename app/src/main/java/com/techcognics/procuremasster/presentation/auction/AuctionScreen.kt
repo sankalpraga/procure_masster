@@ -30,10 +30,14 @@ import com.techcognics.procuremasster.presentation.designsystem.UiStateHandler
 import com.techcognics.procuremasster.presentation.openPdf
 import com.techcognics.procuremasster.presentation.saveFileToDownloads
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.SnackbarHostState
 
 @Composable
 fun AuctionScreen(
     navController: NavHostController,
+//    auctionNumber: String?,
+//    snackbarHostState: SnackbarHostState,
+//    timerAlert: Boolean,
     viewModel: AuctionViewModel = hiltViewModel()
 ) {
 
