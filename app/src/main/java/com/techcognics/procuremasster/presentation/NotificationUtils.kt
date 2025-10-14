@@ -10,6 +10,10 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
+
+
+
+
 @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
 fun showAuctionTimerNotification(context: Context, auctionNumber: String, minutes: Long) {
     val channelId = "auction_channel"
@@ -22,10 +26,16 @@ fun showAuctionTimerNotification(context: Context, auctionNumber: String, minute
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel)
     }
+
     val notificationBuilder = NotificationCompat.Builder(context, channelId)
         .setSmallIcon(R.drawable.ic_dialog_info)
         .setContentTitle("Auction Alert")
         .setContentText("Auction #$auctionNumber: Only $minutes minutes left!")
         .setPriority(NotificationCompat.PRIORITY_HIGH)
     NotificationManagerCompat.from(context).notify(auctionNumber.hashCode(), notificationBuilder.build())
+
 }
+
+
+
+

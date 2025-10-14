@@ -25,7 +25,7 @@ data class SupplierBidDetailsItem(
     val lastPurchasePrice: Double,
     val offerSubmissionDate: String,
     val quantity: Int,
-    val ranking: Any,
+    val ranking: Int,
     val rfqDescription: String,
     val stageStatus: String,
     val status: String,

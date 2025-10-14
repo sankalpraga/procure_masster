@@ -38,14 +38,6 @@ fun LoginScreen(
         }
     }
 
-//    if (state is UiState.Success) {
-//        LaunchedEffect(Unit) {
-//            navController.navigate("supplier_home") {
-//                popUpTo("login") { inclusive = true }
-//            }
-//        }
-//    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,4 +73,7 @@ fun LoginScreen(
 
 
 }
+
+
+
 

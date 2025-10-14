@@ -17,6 +17,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -71,7 +73,11 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import androidx.compose.material3.Snackbar
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.KeyboardType
 import com.techcognics.procuremasster.MainActivity
+
+
 
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -80,7 +86,9 @@ fun BiddingScreen(
     rfqId: Int,
     navController: NavHostController,
     viewModel: AuctionViewModel = hiltViewModel()
+
 ) {
+
     val bidDetailsState by viewModel.bidDetailsItem.collectAsState()
     var selectedItem by remember { mutableStateOf<SupplierBidDetailsItem?>(null) }
     var bidValue by remember { mutableStateOf("") }
@@ -88,7 +96,9 @@ fun BiddingScreen(
     var errorText by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
 
+
     LaunchedEffect(rfqId) { viewModel.loadBidDetails(rfqId) }
+
 
     Scaffold(
         snackbarHost = {
@@ -158,19 +168,97 @@ fun BiddingScreen(
                 title = { Text("Bid for ${item.itemNumber}") },
                 text = {
                     Column {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            // Auction Start Price
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "Auction Start Price: ",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "₹${item.auctionStartPrice}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF388E3C) // Deep green for positive money value
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Bid Incremental
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = if (item.category == "REVERSE_AUCTION") "Bid Decremental: " else "Bid Incremental: ",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "${item.bidDecrementalValue}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF283593) // Deep blue for regular numeric value
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Last Bid Price
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "Last Bid Price: ",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "₹${item.lastBidPrice ?: "-"}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (item.lastBidPrice != null) Color(0xFFD32F2F) else Color.Gray // Red if present, gray if missing
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "New Bid (Server): ",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "₹${item.bidPrice ?: "-"}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (item.bidPrice != null) Color(0xFF388E3C) else Color.Gray // Green if present, gray if missing
+                                )
+                            }
+                        }
+
+//                        Text("Auction Start Price : ₹${item.auctionStartPrice}")
+//                        Text("Bid Incremental : ${item.bidDecrementalValue}")
+//                        Text("Last Bid Price : ₹${item.lastBidPrice ?: "-"}")
+//                        Text("New Bid : ₹${item.bidPrice ?: "-"}")
+
+
                         OutlinedTextField(
                             value = bidValue,
                             onValueChange = { bidValue = it },
                             enabled = !submitting,
                             label = { Text("Enter your new bid") },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+
                         )
                         Spacer(Modifier.height(10.dp))
-                        Text("Auction Start Price: ₹${item.auctionStartPrice}")
-                        Text("Bid Incremental: ${item.bidDecrementalValue}")
-                        Text("Last Bid Price: ₹${item.lastBidPrice ?: "-"}")
-                        Text("New Bid (Server): ₹${item.bidPrice ?: "-"}")
+//                        Text("Auction Start Price: ₹${item.auctionStartPrice}")
+//                        Text("Bid Incremental: ${item.bidDecrementalValue}")
+//                        Text("Last Bid Price: ₹${item.lastBidPrice ?: "-"}")
+//                        Text("New Bid (Server): ₹${item.bidPrice ?: "-"}")
                         Text(
                             "Submit Bid: ₹${bidValue.ifBlank { "-" }}",
                             fontWeight = FontWeight.Bold,
@@ -250,28 +338,52 @@ fun BidItemCardSimple(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    item.itemNumber,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = item.itemNumber,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(Modifier.width(40.dp))
+
+                    // Ranking Box
+
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (item.ranking != null) Color(0xFFF5F5F5)
+                                else Color(0xFFE0E0E0)
+                            )
+                            .border(
+                                width = 1.5.dp,
+                                color = if (item.ranking != null) Color(0xFF388E3C) else Color(0xFFBDBDBD),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = when {
+                                item.ranking == null -> "--"
+                                item.category == "REVERSE_AUCTION" -> "L${item.ranking}"
+                                else -> "H${item.ranking}"
+                            },
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (item.ranking != null) Color(0xFF388E3C) else Color(0xFFBDBDBD)
+                        )
+
+                    }
+                }
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    item.status,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                Text(item.status, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    item.itemDescription,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Text(item.itemDescription, style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    "Qty: ${item.quantity}",
-                    style = MaterialTheme.typography.labelSmall
-                )
+                Text("Qty: ${item.quantity}", style = MaterialTheme.typography.labelSmall)
             }
             IconButton(onClick = { onEdit(item) }) {
                 Icon(Icons.Default.Edit, contentDescription = "Edit Bid", tint = MaterialTheme.colorScheme.primary)
@@ -279,6 +391,7 @@ fun BidItemCardSimple(
         }
     }
 }
+
 
 @Composable
 fun BidEditDialog(
@@ -350,12 +463,15 @@ fun AuctionTimeNotificationTimer(
     rfqId: Int // <-- Add this parameter!
 
 ) {
+
+
     val context = LocalContext.current
     var days by remember { mutableStateOf(0L) }
     var hours by remember { mutableStateOf(0L) }
     var minutes by remember { mutableStateOf(0L) }
     var seconds by remember { mutableStateOf(0L) }
     var notifiedMinutes by remember { mutableStateOf(setOf<Long>()) }
+
 
     val auctionEnd = remember(endDateTime) {
         try {
@@ -367,6 +483,7 @@ fun AuctionTimeNotificationTimer(
             null
         }
     }
+
 
     LaunchedEffect(endDateTime, auctionNumber) {
         while (auctionEnd != null) {
@@ -469,6 +586,8 @@ fun AuctionTimerBlocks(days: Long, hours: Long, minutes: Long, seconds: Long) {
     }
 }
 
+
+
 @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
 fun showAuctionTimerNotification(
     context: Context,
@@ -476,6 +595,7 @@ fun showAuctionTimerNotification(
     auctionNumber: String,
     minutes: Long
 ) {
+
     val channelId = "auction_timer_channel"
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(channelId, "Auction Timer", NotificationManager.IMPORTANCE_HIGH)
@@ -504,7 +624,15 @@ fun showAuctionTimerNotification(
         .setAutoCancel(true)
         .build()
     NotificationManagerCompat.from(context).notify(minutes.toInt(), notification)
+
 }
+
+
+
+
+
+
+
 
 
 
