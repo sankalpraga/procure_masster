@@ -8,6 +8,17 @@ import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun getSessionManager(): SessionManager{
+
     val context = LocalContext.current.applicationContext
     return EntryPointAccessors.fromApplication(context, SessionManagerEntryPoint::class.java).sessionManager()
+
 }
+
+
+
+
+
+
+
+
+

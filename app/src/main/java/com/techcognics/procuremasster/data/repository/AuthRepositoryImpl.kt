@@ -27,7 +27,6 @@ class AuthRepositoryImpl @Inject constructor(
         sessionManager.saveSession(response.idToken, username) // ✅ must save token
         Log.d("AuthRepository", "Token Saved in Session manger $username")
         return response.idToken
-
     }
 
 
@@ -42,4 +41,14 @@ class AuthRepositoryImpl @Inject constructor(
         sessionManager.clearSession()
         }
 
+
+
 }
+
+
+
+
+
+
+
+

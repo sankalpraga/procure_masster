@@ -29,7 +29,7 @@ fun SupplierDrawer(
 ) {
     ModalDrawerSheet {
         Text(
-            text = "Supplier Menu",
+            text = "Menu",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
@@ -211,3 +211,9 @@ fun SupplierDrawer(
 //fun SmallTopAppBar(title: @Composable () -> Unit, navigationIcon: @Composable () -> Unit) {
 //    TODO("Not yet implemented")
 //}
+
+
+
+
+
+

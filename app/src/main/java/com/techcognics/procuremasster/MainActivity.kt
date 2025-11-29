@@ -122,6 +122,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
     override fun onStop() {
         super.onStop()
         // Force logout on app background
@@ -133,4 +134,12 @@ class MainActivity : ComponentActivity() {
 
 
 }
+
+
+
+
+
+
+
+
 

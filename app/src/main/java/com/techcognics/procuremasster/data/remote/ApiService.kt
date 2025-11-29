@@ -2,8 +2,6 @@ package com.techcognics.procuremasster.data.remote
 
 import com.techcognics.procuremasster.data.AccountResponse
 import com.techcognics.procuremasster.data.remote.auctionpackage.AuctionResponseItem
-import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.AuctionBidRequest
-import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.BidPriceRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SaveBidRequest
 import com.techcognics.procuremasster.data.remote.auctionpackage.bidsubmit.SupplierBidDetailsItem
 import com.techcognics.procuremasster.data.remote.auctionpackage.view.AuctionViewResponse
@@ -13,6 +11,7 @@ import com.techcognics.procuremasster.data.remote.dto.FreightTerms
 import com.techcognics.procuremasster.data.remote.dto.LoginRequest
 import com.techcognics.procuremasster.data.remote.dto.LoginResponse
 import com.techcognics.procuremasster.data.remote.dto.RfqViewResponse
+import com.techcognics.procuremasster.data.remote.profile.SupplierResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -26,12 +25,14 @@ import retrofit2.http.Query
 
 interface ApiService {
 
+    // ---------- AUTH ----------
     @POST("authenticate")
     suspend fun login(@Body request: LoginRequest): LoginResponse
 
     @GET("account")
     suspend fun getAccount(): AccountResponse
 
+    // ---------- RFQ ----------
     @GET("supplierDepository/fetchActiveRfqsBidInBetween")
     suspend fun fetchRfqInBetween(
         @Query("startDate") startDate: String,
@@ -43,30 +44,28 @@ interface ApiService {
         @Path("id") id: Int
     ): RfqViewResponse
 
-    // 🔹 PDF download
     @GET("rfq/generateRfqPdfReport/{rfqId}")
     suspend fun generateRfqPdf(
         @Path("rfqId") rfqId: Int
     ): ResponseBody
 
-    // 🔹 Attachment download
     @GET("rfqsAttachment/downloadAttachment/{attachmentId}")
     suspend fun downloadAttachment(
         @Path("attachmentId") attachmentId: Int
     ): ResponseBody
 
-    //Bid Page
+    // ---------- BID ----------
     @GET("supplierDepository/fetchItemBidsDetails/{rfqNumber}")
-    suspend fun getBidDetails(@Path("rfqNumber") rfqNumber: String): BidResponse
+    suspend fun getBidDetails(
+        @Path("rfqNumber") rfqNumber: String
+    ): BidResponse
 
-    //freight
     @GET("freightTermsResource/fetchAllFreightTermsDetails")
     suspend fun getFreightTerms(): List<FreightTerms>
 
     @POST("rfqSuppliersResource/save")
     suspend fun saveBid(@Body request: BidSaveRequest): ResponseBody
 
-    // Upload attachment (correct REST endpoint for your backend)
     @Multipart
     @POST("rfqsAttachment/upload/{rfqId}")
     suspend fun uploadAttachment(
@@ -74,8 +73,7 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): ResponseBody
 
-
-    //Auction
+    // ---------- AUCTION ----------
     @GET("supplierDepository/fetchAuctionDetails")
     suspend fun getAuctionDetails(): List<AuctionResponseItem>
 
@@ -84,12 +82,6 @@ interface ApiService {
         @Path("rfqId") rfqId: Int
     ): AuctionViewResponse
 
-//    @GET("supplierDepository/fetchSupplierBidAuction/{rfqId}")
-//    suspend fun getAuctionBidSubmit(
-//        @Path("rfqId") rfqId: Int
-//    ): BidSubmitItem
-
-    //download bid history
     @GET("supplierDepository/generateBidHistory/{rfqId}")
     suspend fun getBidHistory(
         @Path("rfqId") rfqId: Int
@@ -104,9 +96,65 @@ interface ApiService {
     suspend fun saveBid(
         @Path("rfqSupplierRfqId") rfqId: Int,
         @Body bidList: List<SaveBidRequest>
-    ): Response<Unit> // <--- Must return `Response<>`
+    ): Response<Unit>
 
-// or whatever response model you want if parsing JSON
+    // ---------- SUPPLIER PROFILE MAIN RECORD ----------
+//    @GET("supplierDepository/fetchSupplierRecordByUserId/{userId}")
+//    suspend fun getSupplierByUserId(
+//        @Path("userId") userId: Long
+//    ): SupplierResponse
+
+    // ---------- DROPDOWN APIs FOR SUPPLIER PROFILE ----------
+
+    // Industry
+    @GET("industry/fetchIndustryRecords")
+    suspend fun fetchIndustryRecords(): List<Industry>
+
+    // Sub Industry
+    @GET("subIndustry/fetchAllSubIndustryRecords")
+    suspend fun fetchAllSubIndustryRecords(): List<SubIndustry>
+
+    // Category
+    @GET("category/fetchCategoryRecords")
+    suspend fun fetchCategoryRecords(): List<Category>
+
+    // Sub Category
+    @GET("subCategory/fetchAllSubCategoryRecords")
+    suspend fun fetchAllSubCategoryRecords(): List<SubCategory>
+
+    // Item Process
+    @GET("itemProcess/fetchAllItemProcessRecords")
+    suspend fun fetchAllItemProcessRecords(): List<ItemProces>
+
+    // Country list
+    @GET("location/country")
+    suspend fun country(): List<Country>
+
+    // State list for a country
+    @GET("location/state/{countryId}")
+    suspend fun state(
+        @Path("countryId") countryId: Int
+    ): List<State>
+
+    // City list for a state
+    @GET("location/city/{stateId}")
+    suspend fun city(
+        @Path("stateId") stateId: Int
+    ): List<City>
+
+    // Currency list
+    // Currency list
+    @GET("location/fetchAllCurrencyDetails")
+    suspend fun fetchAllCurrencyDetails(): List<CurrencyDetailsItem>
+
+    // ---------- SUPPLIER PROFILE MAIN RECORD ----------
+    @GET("supplierDepository/fetchSupplierRecordByUserId/{userId}")
+    suspend fun fetchSupplierRecordByUserId(
+        @Path("userId") userId: Long
+    ): SupplierResponse
+
+
+
 
 
 }
