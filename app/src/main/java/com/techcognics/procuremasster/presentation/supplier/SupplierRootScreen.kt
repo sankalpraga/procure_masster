@@ -3,7 +3,6 @@ package com.techcognics.procuremasster.presentation.supplier
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -34,8 +33,8 @@ import com.techcognics.procuremasster.presentation.auction.biddetails.BiddingScr
 import com.techcognics.procuremasster.presentation.auction.view.AuctionDetailScreen
 import com.techcognics.procuremasster.presentation.designsystem.SupplierDrawer
 import com.techcognics.procuremasster.presentation.rfqdetails.RFQScreen
-import com.techcognics.procuremasster.presentation.rfqdetails.view.RfqViewScreenTabbed
 import com.techcognics.procuremasster.presentation.rfqdetails.bid.screens.BidScreen
+import com.techcognics.procuremasster.presentation.rfqdetails.view.RfqViewScreenTabbed
 import com.techcognics.procuremasster.presentation.supplierprofile.SupplierProfileScreen
 import kotlinx.coroutines.launch
 
@@ -43,6 +42,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupplierRootScreen(parentNavController: NavHostController) {
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val supplierNavController = rememberNavController()
@@ -59,9 +59,7 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = {
-                        Text(text = "Procure Masster")
-                    },
+                    title = { Text(text = "Procure Masster") },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(
@@ -71,12 +69,11 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
                         }
                     },
                     actions = {
-                        // JUST the logo – actions are already at extreme right
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "Logo",
                             modifier = Modifier
-                                .size(40.dp)          // adjust size as you like
+                                .size(40.dp)
                                 .padding(end = 12.dp)
                         )
                     }
@@ -88,34 +85,79 @@ fun SupplierRootScreen(parentNavController: NavHostController) {
                 startDestination = "supplier_home",
                 modifier = Modifier.padding(padding)
             ) {
-                composable("supplier_home") { SupplierHome(parentNavController) }
-                composable("supplier_profile") { SupplierProfileScreen(userId = 6L) }
-                composable("supplier_rfq") { RFQScreen(supplierNavController) }
-                composable("supplier_negotiable") { SupplierNegotiableScreen(parentNavController) }
-                composable("supplier_auction") { AuctionScreen(supplierNavController) }
+
+                composable("supplier_home") {
+                    SupplierHome(parentNavController)
+                }
+
+                composable("supplier_profile") {
+                    // userId = 6L for now; you can replace with SessionManager user id
+                    SupplierProfileScreen(
+                        userId = 6L,
+                        onCancelClick = { supplierNavController.popBackStack() },
+                        onSaveClick = {
+                            // Later: call save in ViewModel via shared Hilt VM if needed.
+                            supplierNavController.popBackStack()
+                        }
+                    )
+                }
+
+                composable("supplier_rfq") {
+                    RFQScreen(supplierNavController)
+                }
+
+                composable("supplier_negotiable") {
+                    SupplierNegotiableScreen(parentNavController)
+                }
+
+                composable("supplier_auction") {
+                    AuctionScreen(supplierNavController)
+                }
+
                 composable(
                     route = "rfq_view/{id}",
                     arguments = listOf(navArgument("id") { type = NavType.IntType })
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getInt("id") ?: 0
-                    RfqViewScreenTabbed(navController = supplierNavController, rfqId = id)
+                    RfqViewScreenTabbed(
+                        navController = supplierNavController,
+                        rfqId = id
+                    )
                 }
+
                 composable(
                     route = "rfqStepper/{rfqNumber}",
                     arguments = listOf(navArgument("rfqNumber") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val rfqNumber = backStackEntry.arguments?.getString("rfqNumber") ?: ""
-                    BidScreen(rfqNumber = rfqNumber, navController = supplierNavController)
+                    BidScreen(
+                        rfqNumber = rfqNumber,
+                        navController = supplierNavController
+                    )
                 }
+
                 composable("auction_view/{rfqId}") { backStackEntry ->
-                    val rfqId = backStackEntry.arguments?.getString("rfqId")?.toIntOrNull()
+                    val rfqId = backStackEntry.arguments
+                        ?.getString("rfqId")
+                        ?.toIntOrNull()
                     requireNotNull(rfqId) { "rfqId parameter is missing" }
-                    AuctionDetailScreen(rfqId = rfqId, navController = supplierNavController)
+
+                    AuctionDetailScreen(
+                        rfqId = rfqId,
+                        navController = supplierNavController
+                    )
                 }
+
                 composable("auction_submit/{rfqId}") { backStackEntry ->
-                    val rfqId = backStackEntry.arguments?.getString("rfqId")?.toIntOrNull()
+                    val rfqId = backStackEntry.arguments
+                        ?.getString("rfqId")
+                        ?.toIntOrNull()
                     requireNotNull(rfqId) { "rfqId parameter is missing" }
-                    BiddingScreen(rfqId = rfqId, navController = supplierNavController)
+
+                    BiddingScreen(
+                        rfqId = rfqId,
+                        navController = supplierNavController
+                    )
                 }
             }
         }
